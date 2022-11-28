@@ -1,34 +1,35 @@
+// deno-lint-ignore-file no-explicit-any
 import { Token } from './token.ts';
 import { TokenType } from './token_type.ts';
 
 export default class Scanner {
 	source: string;
 	tokens: Array<Token>;
-	start: number = 0;
-	line: number = 0;
-	current: number = 0;
+	start = 0;
+	line = 0;
+	current = 0;
 	keywords: Map<string, TokenType> = new Map();
-	on_error: Function;
-	constructor(source: string, on_error: Function) {
+	on_error: (line: number, message: string) => void;
+	constructor(source: string, on_error: (line: number, message: string) => void) {
 		this.source = source;
 		this.tokens = [];
 		this.keywords.set("and", TokenType.AND);
-        this.keywords.set("or", TokenType.OR);
-        this.keywords.set("not", TokenType.NOT);
-        this.keywords.set("if", TokenType.IF);
-        this.keywords.set("else", TokenType.ELSE);
-        this.keywords.set("class", TokenType.CLASS);
-        this.keywords.set("true", TokenType.TRUE);
-        this.keywords.set("false", TokenType.FALSE);
-        this.keywords.set("nil", TokenType.NIL);
-        this.keywords.set("fun", TokenType.FUN);
-        this.keywords.set("for", TokenType.FOR);
-        this.keywords.set("while", TokenType.WHILE);
-        this.keywords.set("print", TokenType.PRINT);
-        this.keywords.set("return", TokenType.RETURN);
-        this.keywords.set("super", TokenType.SUPER);
-        this.keywords.set("this", TokenType.THIS);
-        this.keywords.set("var", TokenType.VAR);
+		this.keywords.set("or", TokenType.OR);
+		this.keywords.set("not", TokenType.NOT);
+		this.keywords.set("if", TokenType.IF);
+		this.keywords.set("else", TokenType.ELSE);
+		this.keywords.set("class", TokenType.CLASS);
+		this.keywords.set("true", TokenType.TRUE);
+		this.keywords.set("false", TokenType.FALSE);
+		this.keywords.set("nil", TokenType.NIL);
+		this.keywords.set("fun", TokenType.FUN);
+		this.keywords.set("for", TokenType.FOR);
+		this.keywords.set("while", TokenType.WHILE);
+		this.keywords.set("print", TokenType.PRINT);
+		this.keywords.set("return", TokenType.RETURN);
+		this.keywords.set("super", TokenType.SUPER);
+		this.keywords.set("this", TokenType.THIS);
+		this.keywords.set("var", TokenType.VAR);
 		this.on_error = on_error;
 	}
 	scan_tokens(): Array<Token> {
@@ -49,9 +50,72 @@ export default class Scanner {
 
 		switch (char) {
 			case "(":
-				this.add_token(TokenType.LEFT_PAREN)
+				this.add_token(TokenType.LEFT_PAREN);
+				break;
+			case ")":
+				this.add_token(TokenType.RIGHT_PAREN);
+				break;
+			case "{":
+				this.add_token(TokenType.LEFT_BRACE);
+				break;
+			case "}":
+				this.add_token(TokenType.RIGHT_BRACE);
+				break;
+			case ",":
+				this.add_token(TokenType.COMMA);
+				break;
+			case ".":
+				this.add_token(TokenType.DOT);
+				break;
+			case "+":
+				this.add_token(TokenType.PLUS);
+				break;
+			case ";":
+				this.add_token(TokenType.SLASH);
+				break;
+			case "*":
+				this.add_token(TokenType.STAR);
+				break;
+			case "%":
+				this.add_token(TokenType.MOD);
+				break;
+			case "/":
+				this.operator_slash();
+				break;
+			case "!":
+				this.add_token(
+					this.match("=") ? TokenType.BANG_EQUAL : TokenType.BANG
+				);
+				break;
+			case "=":
+				this.add_token(
+					this.match("=") ? TokenType.EQUAL_EQUAL : TokenType.EQUAL
+				);
+				break;
+			case "<":
+				this.add_token(
+					this.match("=") ? TokenType.LESS_EQUAL : TokenType.LESS
+				);
+				break;
+			case ">":
+				this.add_token(
+					this.match("=") ? TokenType.GREATER_EQUAL : TokenType.GREATER
+				);
+				break;
+			case " ":
+			case "\t":
+			case "\r":
+				return null;
+			case "\n":
+				this.operator_newline();
+				break;
+			case '"':
+				this.string();
+				break;
 			default:
-				this.advance();
+				if (this.isNumber(char)) {
+					// this.number
+				}
 		}
 	}
 	private advance(): string {
@@ -70,4 +134,60 @@ export default class Scanner {
 			line: this.line
 		} as Token);
 	}
+	private match(expected: string): boolean {
+		if (this.is_at_end()) {
+			return false;
+		}
+		if (this.source[this.current] != expected) {
+			return false;
+		}
+		this.current++;
+		return true;
+	}
+	private operator_slash() {
+		if (this.match("/")) { // We got a comment
+			// Go to the end of the line
+			while (this.peek() != "\n" && !this.is_at_end()) {
+				this.advance();
+			}
+		} else {
+			this.add_token(TokenType.SLASH)
+		}
+	}
+	private operator_newline() {
+		this.line += 1;
+	}
+	private peek(): string {
+		return this.is_at_end() ? "\0" : this.source[this.current];
+	}
+	private string() {
+		while (this.peek() != '"' && !this.is_at_end()) {
+			if (this.peek() == "\n") {
+				this.line++;
+			}
+			this.advance();
+		}
+		if (this.is_at_end()) {
+			// Unterminated string
+			this.on_error(this.line, "Unterminated String");
+			return;
+		}
+		
+		// Advance past the "
+		this.advance();
+
+		const string_value = this.source.slice(this.start + 1, this.current - 1);
+		this.add_token(TokenType.STRING, string_value)
+	}
+	private isNumber(str: string): boolean {
+		if (typeof str !== 'string') {
+		  return false;
+		}
+	  
+		if (str.trim() === '') {
+		  return false;
+		}
+	  
+		return !Number.isNaN(Number(str));
+	  }
 }

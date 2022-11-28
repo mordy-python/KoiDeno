@@ -1,7 +1,11 @@
 import Scanner from './src/scanner.ts';
 
-function on_err(x: any) {
-	console.error(x);
+function on_err(line: number, message: string) {
+	console.error(`Error on line ${line}`);
+	console.error("\t" + message);
 }
-var s = new Scanner("hello, (world)", on_err);
+const code = `
+"Hello, World"
+`
+const s = new Scanner(code, on_err);
 console.log(s.scan_tokens());
