@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import { Token } from './token.ts';
 import { TokenType } from './token_type.ts';
 
