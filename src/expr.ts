@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-unused-vars
 import { Token } from "./token.ts";
 
-abstract class ExprVisitor {
+export abstract class ExprVisitor {
   visit_assign_expr(expr: Assign) {
     throw "Not Implemented";
   }
@@ -40,13 +40,13 @@ abstract class ExprVisitor {
   }
 }
 
-abstract class Expr {
+export abstract class Expr {
   accept(_visitor: ExprVisitor) {
     throw "Not Implemented";
   }
 }
 
-class Assign extends Expr {
+export class Assign extends Expr {
   name: Token;
   value: Expr;
   constructor(name: Token, value: Expr) {
@@ -59,7 +59,7 @@ class Assign extends Expr {
   }
 }
 
-class Binary extends Expr {
+export class Binary extends Expr {
   op: Token;
   left: Expr;
   right: Expr;
@@ -74,7 +74,7 @@ class Binary extends Expr {
   }
 }
 
-class Call extends Expr {
+export class Call extends Expr {
   callee: Expr;
   paren: Token;
   args: Array<Token>;
@@ -89,7 +89,7 @@ class Call extends Expr {
   }
 }
 
-class Get extends Expr {
+export class Get extends Expr {
   obj: Expr;
   name: Token;
   constructor(obj: Expr, name: Token) {
@@ -102,7 +102,7 @@ class Get extends Expr {
   }
 }
 
-class Grouping extends Expr {
+export class Grouping extends Expr {
   expression: Expr;
   constructor(expression: Expr) {
     super();
@@ -113,7 +113,7 @@ class Grouping extends Expr {
   }
 }
 
-class Literal extends Expr {
+export class Literal extends Expr {
   // deno-lint-ignore no-explicit-any
   value: any;
   // deno-lint-ignore no-explicit-any
@@ -126,7 +126,7 @@ class Literal extends Expr {
   }
 }
 
-class Logical extends Expr {
+export class Logical extends Expr {
   left: Expr;
   op: Token;
   right: Expr;
@@ -141,7 +141,7 @@ class Logical extends Expr {
   }
 }
 
-class Set extends Expr {
+export class Set extends Expr {
   obj: Expr;
   name: Token;
   value: Expr;
@@ -156,7 +156,7 @@ class Set extends Expr {
   }
 }
 
-class Super extends Expr {
+export class Super extends Expr {
   keyword: Token;
   method: Token;
   constructor(keyword: Token, method: Token) {
@@ -169,7 +169,7 @@ class Super extends Expr {
   }
 }
 
-class This extends Expr {
+export class This extends Expr {
   keyword: Token;
   constructor(keyword: Token) {
     super();
@@ -180,7 +180,7 @@ class This extends Expr {
   }
 }
 
-class Unary extends Expr {
+export class Unary extends Expr {
   operator: Token;
   right: Expr;
   constructor(operator: Token, right: Expr) {
@@ -193,7 +193,7 @@ class Unary extends Expr {
   }
 }
 
-class Variable extends Expr {
+export class Variable extends Expr {
   name: Token;
   constructor(name: Token) {
     super();
