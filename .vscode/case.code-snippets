@@ -15,5 +15,24 @@
 			"}"
 		],
 		"description": "Log output to console"
+	},
+	"Create Expression Classes": {
+		"scope": "typescript",
+		"prefix": "cls",
+		"body": [
+			"class $1 extends Expr{",
+			"\taccept(visitor: ExprVisitor) {",
+			"\t}",
+			"}"
+		],
+		"description": "Log output to console"
+	},
+	"This": {
+		"scope": "typescript",
+		"prefix": "th",
+		"body": [
+			"this.$1 = $1;"
+		],
+		"description": "Log output to console"
 	}
 }
