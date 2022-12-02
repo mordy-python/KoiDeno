@@ -73,7 +73,7 @@ export default class Scanner {
         this.add_token(TokenType.PLUS);
         break;
       case ";":
-        this.add_token(TokenType.SLASH);
+        this.add_token(TokenType.SEMICOLON);
         break;
       case "*":
         this.add_token(TokenType.STAR);
@@ -131,7 +131,9 @@ export default class Scanner {
     }
     // Check if identifier is a keyword
     const text = this.source.slice(this.start, this.current);
-    const type = this.keywords.has(text) ? text : TokenType.IDENTIFIER;
+    const type = this.keywords.has(text)
+      ? this.keywords.get(text)
+      : TokenType.IDENTIFIER;
     this.add_token(type, text);
   }
   private number() {
@@ -165,7 +167,7 @@ export default class Scanner {
     return this.current >= this.source.length;
   }
   private add_token(
-    type: TokenType | string,
+    type?: TokenType | string,
     literal: string | number | null = null,
   ) {
     const text = this.source.slice(this.start, this.current);
