@@ -77,8 +77,8 @@ export class Binary extends Expr {
 export class Call extends Expr {
   callee: Expr;
   paren: Token;
-  args: Array<Token>;
-  constructor(callee: Expr, paren: Token, args: Array<Token>) {
+  args: Array<Expr>;
+  constructor(callee: Expr, paren: Token, args: Array<Expr>) {
     super();
     this.callee = callee;
     this.paren = paren;
