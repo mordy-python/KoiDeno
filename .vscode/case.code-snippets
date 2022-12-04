@@ -10,9 +10,9 @@
 		"scope": "typescript",
 		"prefix": "vis",
 		"body": [
-			"visit_$1_expr() {",
+			"visit_$1_stmt(stmt: $2) {",
 			"\tthrow \"Not Implemented\"",
-			"}"
+			"}\n$0"
 		],
 		"description": "Log output to console"
 	},

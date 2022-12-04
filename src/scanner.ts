@@ -27,7 +27,7 @@ export default class Scanner {
     this.keywords.set("fun", TokenType.FUN);
     this.keywords.set("for", TokenType.FOR);
     this.keywords.set("while", TokenType.WHILE);
-    this.keywords.set("print", TokenType.PRINT);
+    // this.keywords.set("print", TokenType.PRINT);
     this.keywords.set("return", TokenType.RETURN);
     this.keywords.set("super", TokenType.SUPER);
     this.keywords.set("this", TokenType.THIS);
@@ -72,8 +72,11 @@ export default class Scanner {
       case "+":
         this.add_token(TokenType.PLUS);
         break;
+      case "-":
+        this.add_token(TokenType.MINUS);
+        break;
       case ";":
-        this.add_token(TokenType.SLASH);
+        this.add_token(TokenType.SEMICOLON);
         break;
       case "*":
         this.add_token(TokenType.STAR);
@@ -131,7 +134,9 @@ export default class Scanner {
     }
     // Check if identifier is a keyword
     const text = this.source.slice(this.start, this.current);
-    const type = this.keywords.has(text) ? text : TokenType.IDENTIFIER;
+    const type = this.keywords.has(text)
+      ? this.keywords.get(text)
+      : TokenType.IDENTIFIER;
     this.add_token(type, text);
   }
   private number() {
@@ -165,7 +170,7 @@ export default class Scanner {
     return this.current >= this.source.length;
   }
   private add_token(
-    type: TokenType | string,
+    type?: TokenType | string,
     literal: string | number | null = null,
   ) {
     const text = this.source.slice(this.start, this.current);
