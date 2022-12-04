@@ -146,7 +146,7 @@ export class Resolver extends Visitor {
   }
   visit_if_stmt(stmt: If) {
     this.resolve_expression(stmt.condition);
-    this.resolve_statement(stmt.then_branch);
+    this.resolve_statements(stmt.then_branch);
     if (stmt.else_branch) {
       this.resolve_statement(stmt.else_branch);
     }
