@@ -3,7 +3,7 @@
 // This code was bundled using `deno bundle` and it's not recommended to edit it manually
 
 var TokenType;
-(function (TokenType) {
+(function(TokenType) {
     TokenType[TokenType["LEFT_PAREN"] = 0] = "LEFT_PAREN";
     TokenType[TokenType["RIGHT_PAREN"] = 1] = "RIGHT_PAREN";
     TokenType[TokenType["LEFT_BRACE"] = 2] = "LEFT_BRACE";
@@ -54,7 +54,7 @@ class Scanner {
     current = 0;
     keywords = new Map();
     on_error;
-    constructor(source, on_error) {
+    constructor(source, on_error){
         this.source = source;
         this.tokens = [];
         this.keywords.set("and", TokenType.AND);
@@ -69,7 +69,6 @@ class Scanner {
         this.keywords.set("fun", TokenType.FUN);
         this.keywords.set("for", TokenType.FOR);
         this.keywords.set("while", TokenType.WHILE);
-        this.keywords.set("print", TokenType.PRINT);
         this.keywords.set("return", TokenType.RETURN);
         this.keywords.set("super", TokenType.SUPER);
         this.keywords.set("this", TokenType.THIS);
@@ -77,7 +76,7 @@ class Scanner {
         this.on_error = on_error;
     }
     scan_tokens() {
-        while (!this.is_at_end()) {
+        while(!this.is_at_end()){
             this.start = this.current;
             this.tokenize();
         }
@@ -91,7 +90,7 @@ class Scanner {
     }
     tokenize() {
         const __char = this.advance();
-        switch (__char) {
+        switch(__char){
             case "(":
                 this.add_token(TokenType.LEFT_PAREN);
                 break;
@@ -162,7 +161,7 @@ class Scanner {
         }
     }
     identifier() {
-        while (this.isAlphaNum(this.peek()) || this.peek() == "_") {
+        while(this.isAlphaNum(this.peek()) || this.peek() == "_"){
             this.advance();
         }
         const text = this.source.slice(this.start, this.current);
@@ -170,12 +169,12 @@ class Scanner {
         this.add_token(type, text);
     }
     number() {
-        while (this.isNumber(this.peek())) {
+        while(this.isNumber(this.peek())){
             this.advance();
         }
         if (this.peek() == "." && this.isNumber(this.peek_next())) {
             this.advance();
-            while (this.isNumber(this.peek())) {
+            while(this.isNumber(this.peek())){
                 this.advance();
             }
         }
@@ -217,7 +216,7 @@ class Scanner {
     }
     operator_slash() {
         if (this.match("/")) {
-            while (this.peek() != "\n" && !this.is_at_end()) {
+            while(this.peek() != "\n" && !this.is_at_end()){
                 this.advance();
             }
         } else {
@@ -231,7 +230,7 @@ class Scanner {
         return this.is_at_end() ? "\0" : this.source[this.current];
     }
     string() {
-        while (this.peek() != '"' && !this.is_at_end()) {
+        while(this.peek() != '"' && !this.is_at_end()){
             if (this.peek() == "\n") {
                 this.line++;
             }
@@ -269,7 +268,7 @@ class Expr {
 class Assign extends Expr {
     name;
     value;
-    constructor(name, value) {
+    constructor(name, value){
         super();
         this.name = name;
         this.value = value;
@@ -282,7 +281,7 @@ class Binary extends Expr {
     op;
     left;
     right;
-    constructor(left, op, right) {
+    constructor(left, op, right){
         super();
         this.left = left;
         this.op = op;
@@ -296,7 +295,7 @@ class Call extends Expr {
     callee;
     paren;
     args;
-    constructor(callee, paren, args) {
+    constructor(callee, paren, args){
         super();
         this.callee = callee;
         this.paren = paren;
@@ -309,7 +308,7 @@ class Call extends Expr {
 class Get extends Expr {
     obj;
     name;
-    constructor(obj, name) {
+    constructor(obj, name){
         super();
         this.obj = obj;
         this.name = name;
@@ -320,7 +319,7 @@ class Get extends Expr {
 }
 class Grouping extends Expr {
     expression;
-    constructor(expression) {
+    constructor(expression){
         super();
         this.expression = expression;
     }
@@ -330,7 +329,7 @@ class Grouping extends Expr {
 }
 class Literal extends Expr {
     value;
-    constructor(value) {
+    constructor(value){
         super();
         this.value = value;
     }
@@ -342,7 +341,7 @@ class Logical extends Expr {
     left;
     op;
     right;
-    constructor(left, op, right) {
+    constructor(left, op, right){
         super();
         this.left = left;
         this.op = op;
@@ -356,7 +355,7 @@ class Set extends Expr {
     obj;
     name;
     value;
-    constructor(obj, name, value) {
+    constructor(obj, name, value){
         super();
         this.obj = obj;
         this.name = name;
@@ -369,7 +368,7 @@ class Set extends Expr {
 class Super extends Expr {
     keyword;
     method;
-    constructor(keyword, method) {
+    constructor(keyword, method){
         super();
         this.keyword = keyword;
         this.method = method;
@@ -380,7 +379,7 @@ class Super extends Expr {
 }
 class This extends Expr {
     keyword;
-    constructor(keyword) {
+    constructor(keyword){
         super();
         this.keyword = keyword;
     }
@@ -391,7 +390,7 @@ class This extends Expr {
 class Unary extends Expr {
     operator;
     right;
-    constructor(operator, right) {
+    constructor(operator, right){
         super();
         this.operator = operator;
         this.right = right;
@@ -402,7 +401,7 @@ class Unary extends Expr {
 }
 class Variable extends Expr {
     name;
-    constructor(name) {
+    constructor(name){
         super();
         this.name = name;
     }
@@ -417,7 +416,7 @@ class Stmt {
 }
 class Block extends Stmt {
     stmts;
-    constructor(stmts) {
+    constructor(stmts){
         super();
         this.stmts = stmts;
     }
@@ -429,7 +428,7 @@ class Class extends Stmt {
     name;
     methods;
     superclass;
-    constructor(name, methods, superclass) {
+    constructor(name, methods, superclass){
         super();
         this.name = name;
         this.methods = methods;
@@ -441,7 +440,7 @@ class Class extends Stmt {
 }
 class Expression extends Stmt {
     expression;
-    constructor(expression) {
+    constructor(expression){
         super();
         this.expression = expression;
     }
@@ -453,7 +452,7 @@ class Function extends Stmt {
     name;
     params;
     body;
-    constructor(name, params, body) {
+    constructor(name, params, body){
         super();
         this.name = name;
         this.params = params;
@@ -467,7 +466,7 @@ class If extends Stmt {
     condition;
     then_branch;
     else_branch;
-    constructor(condition, then_branch, else_branch) {
+    constructor(condition, then_branch, else_branch){
         super();
         this.condition = condition;
         this.then_branch = then_branch;
@@ -477,20 +476,10 @@ class If extends Stmt {
         return visitor.visit_if_stmt(this);
     }
 }
-class Print extends Stmt {
-    expression;
-    constructor(expression) {
-        super();
-        this.expression = expression;
-    }
-    accept(visitor) {
-        return visitor.visit_print_stmt(this);
-    }
-}
 class Return extends Stmt {
     keyword;
     value;
-    constructor(keyword, value) {
+    constructor(keyword, value){
         super();
         this.keyword = keyword;
         this.value = value;
@@ -502,7 +491,7 @@ class Return extends Stmt {
 class Var extends Stmt {
     name;
     initializer;
-    constructor(name, initializer) {
+    constructor(name, initializer){
         super();
         this.name = name;
         this.initializer = initializer;
@@ -514,7 +503,7 @@ class Var extends Stmt {
 class While extends Stmt {
     condition;
     body;
-    constructor(condition, body) {
+    constructor(condition, body){
         super();
         this.condition = condition;
         this.body = body;
@@ -529,14 +518,14 @@ class Parser {
     tokens;
     on_error;
     current;
-    constructor(tokens, on_error) {
+    constructor(tokens, on_error){
         this.tokens = tokens;
         this.on_error = on_error;
         this.current = 0;
     }
     parse() {
         const stmts = [];
-        while (!this.is_at_end()) {
+        while(!this.is_at_end()){
             stmts.push(this.declaration());
         }
         return stmts;
@@ -559,9 +548,6 @@ class Parser {
         }
     }
     statement() {
-        if (this.match(TokenType.PRINT)) {
-            return this.print_statement();
-        }
         if (this.match(TokenType.IF)) {
             return this.if_statement();
         }
@@ -645,11 +631,6 @@ class Parser {
         }
         return new If(condition, then_branch, else_branch);
     }
-    print_statement() {
-        const value = this.expression();
-        this.consume(TokenType.SEMICOLON, "Expected ';' after value");
-        return new Print(value);
-    }
     expression_statement() {
         const expr = this.expression();
         this.consume(TokenType.SEMICOLON, "Expect ';' after value");
@@ -675,7 +656,7 @@ class Parser {
     }
     or() {
         let expr = this.and();
-        while (this.match(TokenType.OR)) {
+        while(this.match(TokenType.OR)){
             const op = this.previous();
             const right = this.and();
             expr = new Logical(expr, op, right);
@@ -684,7 +665,7 @@ class Parser {
     }
     and() {
         let expr = this.equality();
-        while (this.match(TokenType.AND)) {
+        while(this.match(TokenType.AND)){
             const op = this.previous();
             const right = this.equality();
             expr = new Logical(expr, op, right);
@@ -693,7 +674,7 @@ class Parser {
     }
     equality() {
         let expr = this.comparison();
-        while (this.match(TokenType.BANG, TokenType.BANG_EQUAL)) {
+        while(this.match(TokenType.BANG, TokenType.BANG_EQUAL)){
             const op = this.previous();
             const right = this.comparison();
             expr = new Binary(expr, op, right);
@@ -702,7 +683,7 @@ class Parser {
     }
     comparison() {
         let expr = this.term();
-        while (this.match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL, TokenType.EQUAL_EQUAL)) {
+        while(this.match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL, TokenType.EQUAL_EQUAL)){
             const op = this.previous();
             const right = this.term();
             expr = new Binary(expr, op, right);
@@ -711,7 +692,7 @@ class Parser {
     }
     term() {
         let expr = this.factor();
-        while (this.match(TokenType.MINUS, TokenType.PLUS)) {
+        while(this.match(TokenType.MINUS, TokenType.PLUS)){
             const op = this.previous();
             const right = this.factor();
             expr = new Binary(expr, op, right);
@@ -720,7 +701,7 @@ class Parser {
     }
     factor() {
         let expr = this.unary();
-        while (this.match(TokenType.SLASH, TokenType.STAR, TokenType.MOD)) {
+        while(this.match(TokenType.SLASH, TokenType.STAR, TokenType.MOD)){
             const op = this.previous();
             const right = this.unary();
             expr = new Binary(expr, op, right);
@@ -737,7 +718,7 @@ class Parser {
     }
     call() {
         let expr = this.primary();
-        while (true) {
+        while(true){
             if (this.match(TokenType.LEFT_PAREN)) {
                 expr = this.finish_call(expr);
             } else if (this.match(TokenType.DOT)) {
@@ -754,7 +735,7 @@ class Parser {
         if (!this.check(TokenType.RIGHT_PAREN)) {
             do {
                 args.push(this.expression());
-            } while (this.match(TokenType.COMMA))
+            }while (this.match(TokenType.COMMA))
         }
         const paren = this.consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments in call expression");
         return new Call(callee, paren, args);
@@ -802,7 +783,7 @@ class Parser {
         }
         this.consume(TokenType.LEFT_BRACE, "Expected block after class declaration");
         const methods = [];
-        while (!this.check(TokenType.RIGHT_BRACE) && !this.is_at_end()) {
+        while(!this.check(TokenType.RIGHT_BRACE) && !this.is_at_end()){
             methods.push(this.function("method"));
         }
         this.consume(TokenType.RIGHT_BRACE, "Expected '}' after class body");
@@ -814,7 +795,7 @@ class Parser {
         const params = [];
         if (!this.check(TokenType.RIGHT_PAREN)) {
             params.push(this.consume(TokenType.IDENTIFIER, `Parameter names must be valid identifiers`));
-            while (this.match(TokenType.COMMA)) {
+            while(this.match(TokenType.COMMA)){
                 params.push(this.consume(TokenType.IDENTIFIER, `Parameter names must be valid identifiers`));
             }
         }
@@ -825,7 +806,7 @@ class Parser {
     }
     block() {
         const statements = [];
-        while (!this.check(TokenType.RIGHT_BRACE) && !this.is_at_end()) {
+        while(!this.check(TokenType.RIGHT_BRACE) && !this.is_at_end()){
             statements.push(this.declaration());
         }
         this.consume(TokenType.RIGHT_BRACE, "Expect '}' after block");
@@ -838,7 +819,7 @@ class Parser {
         throw this.on_error(this.peek(), message);
     }
     match(...types) {
-        for (const type of types) {
+        for (const type of types){
             if (this.check(type)) {
                 this.advance();
                 return true;
@@ -869,18 +850,17 @@ class Parser {
     }
     synchronize() {
         this.advance();
-        while (!this.is_at_end()) {
+        while(!this.is_at_end()){
             if (this.previous().type == TokenType.SEMICOLON) {
                 return;
             }
-            switch (this.peek().type) {
+            switch(this.peek().type){
                 case TokenType.CLASS:
                 case TokenType.FUN:
                 case TokenType.VAR:
                 case TokenType.FOR:
                 case TokenType.WHILE:
                 case TokenType.IF:
-                case TokenType.PRINT:
                 case TokenType.RETURN:
                     return;
             }
@@ -895,7 +875,7 @@ class Parser {
 class Environment {
     parent;
     values;
-    constructor(parent) {
+    constructor(parent){
         this.parent = parent;
         this.values = new Map();
     }
@@ -929,7 +909,7 @@ class Environment {
         let env = this;
         for (const _ of [
             ...Array(distance)
-        ].map((_, i) => 0 + i * 1)) {
+        ].map((_, i)=>0 + i * 1)){
             env = env.parent;
         }
         return env;
@@ -941,7 +921,7 @@ class Environment {
 class KoiInstance {
     klass;
     fields;
-    constructor(klass) {
+    constructor(klass){
         this.klass = klass;
         this.fields = new Map();
     }
@@ -974,7 +954,7 @@ class KoiClass extends KoiCallable {
     name;
     superclass;
     methods;
-    constructor(name, methods, superclass) {
+    constructor(name, methods, superclass){
         super();
         this.name = name;
         this.superclass = superclass;
@@ -1012,14 +992,14 @@ class KoiClass extends KoiCallable {
 }
 class KoiReturnError extends Error {
     value;
-    constructor(value) {
+    constructor(value){
         super(undefined, undefined);
         this.value = value;
     }
 }
 function minOf(array, selector) {
     let minimumValue = undefined;
-    for (const i of array) {
+    for (const i of array){
         const currentValue = selector(i);
         if (minimumValue === undefined || currentValue < minimumValue) {
             minimumValue = currentValue;
@@ -1032,10 +1012,10 @@ function minOf(array, selector) {
     return minimumValue;
 }
 function zip(...arrays) {
-    const minLength = minOf(arrays, (it) => it.length) ?? 0;
+    const minLength = minOf(arrays, (it)=>it.length) ?? 0;
     const ret = new Array(minLength);
-    for (let i = 0; i < minLength; i += 1) {
-        const arr = arrays.map((it) => it[i]);
+    for(let i = 0; i < minLength; i += 1){
+        const arr = arrays.map((it)=>it[i]);
         ret[i] = arr;
     }
     return ret;
@@ -1044,7 +1024,7 @@ class KoiFunction extends KoiCallable {
     decl;
     closure;
     is_initializer;
-    constructor(declaration, closure, is_initializer) {
+    constructor(declaration, closure, is_initializer){
         super();
         this.decl = declaration;
         this.closure = closure;
@@ -1052,7 +1032,7 @@ class KoiFunction extends KoiCallable {
     }
     call(interpreter, args) {
         const env = new Environment(this.closure);
-        for (const token_arg of zip(this.decl.params, args)) {
+        for (const token_arg of zip(this.decl.params, args)){
             env.define(token_arg[0].lexeme, token_arg[1]);
         }
         try {
@@ -1087,7 +1067,7 @@ class KoiFunction extends KoiCallable {
 class KoiRuntimeError {
     token;
     message;
-    constructor(token, message) {
+    constructor(token, message){
         this.token = token;
         this.message = message;
     }
@@ -1157,19 +1137,67 @@ class Visitor {
         throw "Not Implemented";
     }
 }
+class Clock extends KoiCallable {
+    arity() {
+        return 0;
+    }
+    call(_interpreter, _args) {
+        return Date.now() / 1000;
+    }
+    toString() {
+        return "<native function clock>";
+    }
+}
+class Input extends KoiCallable {
+    arity() {
+        return 1;
+    }
+    call(_interpreter, args) {
+        return prompt(args[0]);
+    }
+    toString() {
+        return "<native function input>";
+    }
+}
+class Print extends KoiCallable {
+    arity() {
+        return 1;
+    }
+    call(_interpreter, args) {
+        console.log(args[0]);
+    }
+    toString() {
+        return "<native function print>";
+    }
+}
+class Println extends KoiCallable {
+    arity() {
+        return 1;
+    }
+    call(_interpreter, args) {
+        console.log(args[0] + "\n");
+    }
+    toString() {
+        return "<native function println>";
+    }
+}
 class Interpreter extends Visitor {
     globals;
     env;
     locals;
-    constructor() {
+    constructor(){
         super();
         this.globals = new Environment();
         this.env = this.globals;
         this.locals = new Map();
+        this.globals.define("clock", new Clock());
+        this.globals.define("input", new Input());
+        this.globals.define("print", new Print());
+        this.globals.define("println", new Println());
     }
     interpret(statements) {
         try {
-            for (const stmt of statements) {
+            for (const stmt of statements){
                 this.execute(stmt);
             }
         } catch (error) {
@@ -1214,7 +1242,7 @@ class Interpreter extends Visitor {
     visit_binary_expr(expr) {
         const left = this.evaluate(expr.left);
         const right = this.evaluate(expr.right);
-        switch (expr.op.type) {
+        switch(expr.op.type){
             case TokenType.MINUS:
                 this.check_number_operands(expr.op, left, right);
                 return left - right;
@@ -1258,11 +1286,6 @@ class Interpreter extends Visitor {
         this.evaluate(stmt.expression);
         return null;
     }
-    visit_print_stmt(stmt) {
-        const value = this.evaluate(stmt.expression);
-        console.log(this.stringify(value));
-        return null;
-    }
     visit_assign_expr(expr) {
         const value = this.evaluate(expr.value);
         const distance = this.locals.get(expr);
@@ -1280,7 +1303,7 @@ class Interpreter extends Visitor {
     visit_call_expr(expr) {
         const fn = this.evaluate(expr.callee);
         const args = [];
-        for (const arg of expr.args) {
+        for (const arg of expr.args){
             args.push(this.evaluate(arg));
         }
         if (!(fn instanceof KoiCallable)) {
@@ -1315,7 +1338,7 @@ class Interpreter extends Visitor {
             this.env.define("super", superclass);
         }
         const methods = new Map();
-        for (const method of stmt.methods) {
+        for (const method of stmt.methods){
             const fn = new KoiFunction(method, this.env, method.name.lexeme == "init");
             methods.set(method.name.lexeme, fn);
         }
@@ -1391,7 +1414,7 @@ class Interpreter extends Visitor {
         return this.evaluate(expr.right);
     }
     visit_while_stmt(stmt) {
-        while (this.is_truthy(this.evaluate(stmt.condition))) {
+        while(this.is_truthy(this.evaluate(stmt.condition))){
             this.execute(stmt.body);
         }
         return null;
@@ -1431,10 +1454,10 @@ class Interpreter extends Visitor {
         const previous = this.env;
         try {
             this.env = env;
-            for (const stmt of statements) {
+            for (const stmt of statements){
                 this.execute(stmt);
             }
-        } finally {
+        } finally{
             this.env = previous;
         }
     }
@@ -1448,14 +1471,14 @@ class Interpreter extends Visitor {
     }
 }
 var FunctionType;
-(function (FunctionType) {
+(function(FunctionType) {
     FunctionType[FunctionType["NONE"] = 0] = "NONE";
     FunctionType[FunctionType["FUNCTION"] = 1] = "FUNCTION";
     FunctionType[FunctionType["INITIALIZER"] = 2] = "INITIALIZER";
     FunctionType[FunctionType["METHOD"] = 3] = "METHOD";
 })(FunctionType || (FunctionType = {}));
 var ClassType;
-(function (ClassType) {
+(function(ClassType) {
     ClassType[ClassType["NONE"] = 0] = "NONE";
     ClassType[ClassType["CLASS"] = 1] = "CLASS";
     ClassType[ClassType["SUBCLASS"] = 2] = "SUBCLASS";
@@ -1529,12 +1552,12 @@ class Deque {
         const head = this.#head;
         const tail = this.#tail;
         if (head <= tail) {
-            for (let i = head; i < tail; ++i)yield this.#list[i];
+            for(let i = head; i < tail; ++i)yield this.#list[i];
             return;
         }
         const capacity = this.capacity;
-        for (let i1 = head; i1 < capacity; ++i1)yield this.#list[i1];
-        for (let i2 = 0; i2 < tail; ++i2)yield this.#list[i2];
+        for(let i1 = head; i1 < capacity; ++i1)yield this.#list[i1];
+        for(let i2 = 0; i2 < tail; ++i2)yield this.#list[i2];
     }
     #shrinkArray() {
         this.#list.length >>>= 1;
@@ -1559,7 +1582,7 @@ class Resolver extends Visitor {
     on_error;
     current_function;
     current_class;
-    constructor(interpreter, on_error) {
+    constructor(interpreter, on_error){
         super();
         this.interpreter = interpreter;
         this.scopes = new Deque();
@@ -1582,7 +1605,7 @@ class Resolver extends Visitor {
                 stmts
             ];
         }
-        for (const stmt of stmts) {
+        for (const stmt of stmts){
             this.resolve_statement(stmt);
         }
     }
@@ -1593,7 +1616,7 @@ class Resolver extends Visitor {
         return expr.accept(this);
     }
     resolve_local(expr, name) {
-        Array.from(this.scopes).reverse().map((scope, index) => {
+        Array.from(this.scopes).reverse().map((scope, index)=>{
             if (scope?.has(name.lexeme)) {
                 this.interpreter.resolve(expr, index);
                 return;
@@ -1604,7 +1627,7 @@ class Resolver extends Visitor {
         const enclosing = this.current_function;
         this.current_function = type;
         this.begin_scope();
-        for (const param of fn.params) {
+        for (const param of fn.params){
             this.declare(param);
             this.define(param);
         }
@@ -1662,9 +1685,6 @@ class Resolver extends Visitor {
             this.resolve_statement(stmt.else_branch);
         }
     }
-    visit_print_stmt(stmt) {
-        this.resolve_expression(stmt.expression);
-    }
     visit_return_stmt(stmt) {
         if (this.current_function == FunctionType.NONE) {
             this.on_error(stmt.keyword, "Cannot use return outside of a function");
@@ -1686,7 +1706,7 @@ class Resolver extends Visitor {
     }
     visit_call_expr(expr) {
         this.resolve_expression(expr.callee);
-        for (const arg of expr.args) {
+        for (const arg of expr.args){
             this.resolve_expression(arg);
         }
     }
@@ -1740,7 +1760,7 @@ class Resolver extends Visitor {
         }
         this.begin_scope();
         this.scopes.back?.set("this", true);
-        for (const method of stmt.methods) {
+        for (const method of stmt.methods){
             let decl = FunctionType.METHOD;
             if (method.name.lexeme == "init") {
                 decl = FunctionType.INITIALIZER;
@@ -1768,7 +1788,7 @@ class Koi {
     had_error;
     had_runtime_error;
     interpreter;
-    constructor() {
+    constructor(){
         this.had_error = false;
         this.had_runtime_error = false;
         this.interpreter = new Interpreter();
@@ -1781,7 +1801,7 @@ class Koi {
         if (this.had_error) {
             return;
         }
-        const resolver = new Resolver(this.interpreter, (token, message) => {
+        const resolver = new Resolver(this.interpreter, (token, message)=>{
             this.report(token.line, token.lexeme, message);
         });
         resolver.resolve(statements);
@@ -1822,7 +1842,7 @@ class Koi {
     repl() {
         console.log("Koi v2.0");
         console.log("Hit Ctrl+C or Ctrl+D to exit");
-        while (true) {
+        while(true){
             try {
                 const line = prompt("> ");
                 if (line && line[0] == "\x04") {
@@ -1830,7 +1850,7 @@ class Koi {
                 }
                 this.run(line);
                 this.had_error = false;
-            } catch {
+            } catch  {
                 this.quit();
             }
         }
