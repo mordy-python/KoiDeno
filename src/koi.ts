@@ -6,7 +6,7 @@ import { KoiRuntimeError } from "./koi_runtime_error.ts";
 import { Resolver } from "./resolver.ts";
 import { TokenType } from "./token_type.ts";
 
-export class Koi {
+class Koi {
   had_error: boolean;
   had_runtime_error: boolean;
   interpreter: Interpreter;
@@ -19,21 +19,15 @@ export class Koi {
     const scanner = new Scanner(source, this.scanner_error);
     const tokens = scanner.scan_tokens();
 
-    const parser = new Parser(tokens, (token: Token, message: string) => {
-      message = `[line ${token.line}] Error at ${
-        token.type == TokenType.EOF ? "end" : token.lexeme
-      }: ${message}`;
-      console.error(message);
-      this.had_error = true;
-    });
+    const parser = new Parser(tokens, this.parse_error);
     const statements = parser.parse();
-
+    if (this.had_error) {
+      return;
+    }
     const resolver = new Resolver(
       this.interpreter,
       (token: Token, message: string) => {
-        message = `[line ${token.line}] Error : ${message}`;
-        console.error(message);
-        this.had_error = true;
+        this.report(token.line, token.lexeme, message);
       },
     );
     resolver.resolve(statements);
@@ -58,10 +52,12 @@ export class Koi {
     this.had_runtime_error = true;
   }
   report(line: number, where: string, message: string) {
+    message = `[line ${line}] Error ${where} : ${message}`;
+    console.error(message);
     this.had_error = true;
   }
-  run_file(filename: string) {
-    const lines = Deno.readTextFileSync(filename);
+  async run_file(filename: string) {
+    const lines = await Deno.readTextFile(filename);
     this.run(lines);
 
     if (this.had_error) {
@@ -93,11 +89,12 @@ export class Koi {
   }
   main() {
     const args = Deno.args;
+    console.log(args);
     if (args.length > 1) {
       console.log("Usage: koi [script]");
       Deno.exit(64);
     } else if (args.length == 1) {
-      new Koi().run_file(args[0]);
+      new Koi().run_file(args[1]);
     } else {
       new Koi().repl();
     }
