@@ -89,12 +89,12 @@ class Koi {
   }
   main() {
     const args = Deno.args;
-    console.log(args);
+
     if (args.length > 1) {
       console.log("Usage: koi [script]");
       Deno.exit(64);
     } else if (args.length == 1) {
-      new Koi().run_file(args[1]);
+      new Koi().run_file(args[0]);
     } else {
       new Koi().repl();
     }
