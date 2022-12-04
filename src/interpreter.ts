@@ -345,7 +345,7 @@ export class Interpreter extends Visitor {
     }
     return left == right;
   }
-  private exec_block(statements: Array<Stmt>, env: Environment) {
+  exec_block(statements: Array<Stmt>, env: Environment) {
     const previous = this.env;
     try {
       this.env = env;

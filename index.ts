@@ -17,14 +17,8 @@ function on_parse_error(token: Token, message: string) {
   return " Error on line: " + token.line + "\n\t" + message;
 }
 const code = `
-class printer {
-  init() {
-    print "printer";
-  }
-  init1(){
-    print "print";
-  }
-}
+var name = "Josh";
+print name;
 `;
 const s = new Scanner(code, on_err);
 const p = new Parser(s.scan_tokens(), on_parse_error);

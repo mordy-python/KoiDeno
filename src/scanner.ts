@@ -72,6 +72,9 @@ export default class Scanner {
       case "+":
         this.add_token(TokenType.PLUS);
         break;
+      case "-":
+        this.add_token(TokenType.MINUS);
+        break;
       case ";":
         this.add_token(TokenType.SEMICOLON);
         break;

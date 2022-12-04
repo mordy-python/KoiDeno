@@ -1,5 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { Environment } from "./environment.ts";
+import { Interpreter } from "./interpreter.ts";
 import { KoiCallable } from "./koi_callable.ts";
 import { KoiInstance } from "./koi_instance.ts";
 import { KoiReturnError } from "./koi_return_error.ts";
@@ -20,13 +21,10 @@ export class KoiFunction extends KoiCallable {
     this.closure = closure;
     this.is_initializer = is_initializer;
   }
-  call(interpreter: any, args: any[]) {
+  call(interpreter: Interpreter, args: any[]) {
     const env = new Environment(this.closure);
     for (const token_arg of this.zip(this.decl.params, args)) {
-      const tok: Token = token_arg[0];
-      const arg: any = token_arg[1];
-
-      env.define(tok.lexeme, arg);
+      env.define(token_arg[0].lexeme, token_arg[1]);
     }
     try {
       interpreter.exec_block(this.decl.body, env);
@@ -36,6 +34,8 @@ export class KoiFunction extends KoiCallable {
           return this.closure.get_at(0, "this");
         }
         return error.value;
+      } else {
+        console.log(error);
       }
     }
     if (this.is_initializer) {

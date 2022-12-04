@@ -455,6 +455,6 @@ export class Parser {
   }
   private error(token: Token, message: string) {
     this.on_error(token, message);
-    throw new ParseError(message);
+    throw new ParseError(token.line + " " + message);
   }
 }
