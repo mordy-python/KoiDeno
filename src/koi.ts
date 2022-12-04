@@ -6,7 +6,7 @@ import { KoiRuntimeError } from "./koi_runtime_error.ts";
 import { Resolver } from "./resolver.ts";
 import { TokenType } from "./token_type.ts";
 
-class Koi {
+export class Koi {
   had_error: boolean;
   had_runtime_error: boolean;
   interpreter: Interpreter;
@@ -56,8 +56,8 @@ class Koi {
     console.error(message);
     this.had_error = true;
   }
-  async run_file(filename: string) {
-    const lines = await Deno.readTextFile(filename);
+  run_file(filename: string) {
+    const lines = Deno.readTextFileSync(filename);
     this.run(lines);
 
     if (this.had_error) {
@@ -89,12 +89,11 @@ class Koi {
   }
   main() {
     const args = Deno.args;
-    console.log(args);
     if (args.length > 1) {
       console.log("Usage: koi [script]");
       Deno.exit(64);
     } else if (args.length == 1) {
-      new Koi().run_file(args[1]);
+      new Koi().run_file(args[0]);
     } else {
       new Koi().repl();
     }
