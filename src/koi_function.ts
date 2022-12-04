@@ -5,8 +5,7 @@ import { KoiCallable } from "./koi_callable.ts";
 import { KoiInstance } from "./koi_instance.ts";
 import { KoiReturnError } from "./koi_return_error.ts";
 import { Function } from "./stmt.ts";
-import { Token } from "./token.ts";
-
+import { zip } from "https://deno.land/std@0.167.0/collections/zip.ts";
 export class KoiFunction extends KoiCallable {
   decl: Function;
   closure: Environment;
@@ -23,7 +22,7 @@ export class KoiFunction extends KoiCallable {
   }
   call(interpreter: Interpreter, args: any[]) {
     const env = new Environment(this.closure);
-    for (const token_arg of this.zip(this.decl.params, args)) {
+    for (const token_arg of zip(this.decl.params, args)) {
       env.define(token_arg[0].lexeme, token_arg[1]);
     }
     try {
@@ -43,12 +42,12 @@ export class KoiFunction extends KoiCallable {
     }
     return null;
   }
-  private *zip(a: Array<Token>, b: Array<any>) {
-    const len = Math.max(a.length, b.length);
-    for (let i = 0; i < len; i++) {
-      yield [a[i], b[i]];
-    }
-  }
+  // private *zip(a: Array<Token>, b: Array<any>) {
+  //   const len = Math.max(a.length, b.length);
+  //   for (let i = 0; i < len; i++) {
+  //     yield [a[i], b[i]];
+  //   }
+  // }
   arity(): number {
     return this.decl.params.length;
   }
