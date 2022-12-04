@@ -2,12 +2,17 @@
 
 import { KoiInstance } from "./koi_instance.ts";
 import { KoiCallable } from "./koi_callable.ts";
+import { KoiFunction } from "./koi_function.ts";
 
 export class KoiClass extends KoiCallable {
   name: string;
   superclass?: KoiClass;
   methods: Map<string, any>;
-  constructor(name: string, methods: Map<string, any>, superclass?: KoiClass) {
+  constructor(
+    name: string,
+    methods: Map<string, KoiFunction>,
+    superclass?: KoiClass,
+  ) {
     super();
     this.name = name;
     this.superclass = superclass;
