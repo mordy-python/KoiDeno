@@ -27,7 +27,7 @@ export default class Scanner {
     this.keywords.set("fun", TokenType.FUN);
     this.keywords.set("for", TokenType.FOR);
     this.keywords.set("while", TokenType.WHILE);
-    this.keywords.set("print", TokenType.PRINT);
+    // this.keywords.set("print", TokenType.PRINT);
     this.keywords.set("return", TokenType.RETURN);
     this.keywords.set("super", TokenType.SUPER);
     this.keywords.set("this", TokenType.THIS);

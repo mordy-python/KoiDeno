@@ -5,7 +5,6 @@ import {
   Expression,
   Function,
   If,
-  Print,
   Return,
   Stmt,
   Var,
@@ -150,9 +149,6 @@ export class Resolver extends Visitor {
     if (stmt.else_branch) {
       this.resolve_statement(stmt.else_branch);
     }
-  }
-  visit_print_stmt(stmt: Print) {
-    this.resolve_expression(stmt.expression);
   }
   visit_return_stmt(stmt: Return) {
     if (this.current_function == FunctionType.NONE) {

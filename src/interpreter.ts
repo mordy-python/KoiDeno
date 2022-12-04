@@ -5,7 +5,6 @@ import {
   Expression,
   Function,
   If,
-  Print,
   Return,
   Stmt,
   Var,
@@ -36,6 +35,9 @@ import { KoiRuntimeError } from "./koi_runtime_error.ts";
 import { Token } from "./token.ts";
 import { TokenType } from "./token_type.ts";
 import { Visitor } from "./visitor.ts";
+import { Clock } from "./std/clock.ts";
+import { Input } from "./std/input.ts";
+import { Print, Println } from "./std/print.ts";
 
 export class Interpreter extends Visitor {
   globals: Environment;
@@ -48,11 +50,11 @@ export class Interpreter extends Visitor {
     this.locals = new Map<string | Expr, any>();
 
     // TODO: Uncomment when std lib is made
-    // this.globals.define("clock", Clock())
-    // this.globals.define("input", Input())
-    // this.globals.define("read_file", ReadFile())
-    // this.globals.define("write_file", WriteFile())
-    // this.globals.define("length", Length())
+    this.globals.define("clock", new Clock());
+    this.globals.define("input", new Input());
+    this.globals.define("print", new Print());
+    this.globals.define("println", new Println());
+    // this.globals.define("length", new Length())
   }
   interpret(statements: Array<Stmt>) {
     try {
@@ -145,11 +147,6 @@ export class Interpreter extends Visitor {
   }
   visit_expression_stmt(stmt: Expression) {
     this.evaluate(stmt.expression);
-    return null;
-  }
-  visit_print_stmt(stmt: Print) {
-    const value = this.evaluate(stmt.expression);
-    console.log(this.stringify(value));
     return null;
   }
   visit_assign_expr(expr: Assign) {
