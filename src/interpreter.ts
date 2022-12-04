@@ -114,13 +114,7 @@ export class Interpreter extends Visitor {
         if ((left instanceof Number) && (right instanceof Number)) {
           return <number> left + <number> right;
         }
-        if (left instanceof String) {
-          return <string> left + <string> right;
-        }
-        throw new KoiRuntimeError(
-          expr.op,
-          "Left side must be either a string or a number",
-        );
+        return <string> left + <string> right;
       case TokenType.SLASH:
         if (<number> right == 0) {
           throw new KoiRuntimeError(right, `Cannor divide ${left} by zero`);
