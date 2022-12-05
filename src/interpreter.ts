@@ -36,6 +36,8 @@ import { Token } from "./token.ts";
 import { TokenType } from "./token_type.ts";
 import { Visitor } from "./visitor.ts";
 import { Print, Println } from "./std/print.ts";
+import { Input } from "./std/input.ts";
+import { Clock } from "./std/clock.ts";
 export class Interpreter extends Visitor {
   globals: Environment;
   env: Environment;
@@ -48,8 +50,8 @@ export class Interpreter extends Visitor {
 
     this.globals.define("print", new Print());
     this.globals.define("println", new Println());
-    // this.globals.define("clock", Clock())
-    // this.globals.define("input", Input())
+    this.globals.define("clock", new Clock());
+    this.globals.define("input", new Input());
     // this.globals.define("read_file", ReadFile())
     // this.globals.define("write_file", WriteFile())
     // this.globals.define("length", Length())
