@@ -7,7 +7,7 @@ import { KoiFunction } from "./koi_function.ts";
 export class KoiClass extends KoiCallable {
   name: string;
   superclass?: KoiClass;
-  methods: Map<string, any>;
+  methods: Map<string, KoiFunction>;
   constructor(
     name: string,
     methods: Map<string, KoiFunction>,

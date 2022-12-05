@@ -113,13 +113,21 @@ export class Interpreter extends Visitor {
         this.check_number_operands(expr.op, left, right);
         return <number> left % <number> right;
       case TokenType.PLUS:
-        if ((left instanceof Number) && (right instanceof Number)) {
+        if ((typeof left == "number") && (typeof right == "number")) {
           return <number> left + <number> right;
+        } else if (typeof left == "string") {
+          return <string> left + <string> right;
+        } else {
+          if (left instanceof KoiInstance) {
+            return (left.klass.methods.get("_add") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+          throw new KoiRuntimeError(right, "Both operands must be numbers");
         }
-        return <string> left + <string> right;
       case TokenType.SLASH:
         if (<number> right == 0) {
-          throw new KoiRuntimeError(right, `Cannor divide ${left} by zero`);
+          throw new KoiRuntimeError(right, `Cannot divide ${left} by zero`);
         }
         this.check_number_operands(expr.op, left, right);
         return <number> left / <number> right;
