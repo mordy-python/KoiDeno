@@ -326,11 +326,11 @@ export class Interpreter extends Visitor {
       );
     }
   }
-  private check_number_operands(operator: Token, left: any, right: any) {
+  private check_number_operands(left: any, right: any) {
     if ((typeof left == "number") && (typeof right == "number")) {
-      return;
+      return true;
     } else {
-      throw new KoiRuntimeError(operator, `Both operands must be numbers`);
+      return false;
     }
   }
   private is_truthy(object: any): boolean {
