@@ -38,7 +38,6 @@ export enum TokenType {
   FUN,
   FOR,
   WHILE,
-  // PRINT,
   RETURN,
   SUPER,
   THIS,

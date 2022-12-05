@@ -147,11 +147,6 @@ export class Interpreter extends Visitor {
     this.evaluate(stmt.expression);
     return null;
   }
-  // visit_print_stmt(stmt: Print) {
-  //   const value = this.evaluate(stmt.expression);
-  //   console.log(this.stringify(value));
-  //   return null;
-  // }
   visit_assign_expr(expr: Assign) {
     const value = this.evaluate(expr.value);
     const distance = this.locals.get(expr);
