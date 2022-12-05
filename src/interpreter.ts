@@ -35,6 +35,7 @@ import { KoiRuntimeError } from "./koi_runtime_error.ts";
 import { Token } from "./token.ts";
 import { TokenType } from "./token_type.ts";
 import { Visitor } from "./visitor.ts";
+import * as Colors from "https://deno.land/std@0.167.0/fmt/colors.ts";
 import { Print, Println } from "./std/print.ts";
 import { Input } from "./std/input.ts";
 import { Clock } from "./std/clock.ts";
@@ -62,7 +63,12 @@ export class Interpreter extends Visitor {
         this.execute(stmt);
       }
     } catch (error) {
-      console.log(error);
+      if (error instanceof KoiRuntimeError) {
+        console.error(Colors.red("Runtime error:"));
+        console.error(Colors.red(`  Error on line ${error.token.line}
+    Error at ${error.token.type == TokenType.EOF ? "end" : error.token.lexeme}
+      ${error.message}`));
+      }
       Deno.exit(1);
     }
   }
@@ -107,45 +113,147 @@ export class Interpreter extends Visitor {
 
     switch (expr.op.type) {
       case TokenType.MINUS:
-        this.check_number_operands(expr.op, left, right);
-        return <number> left - <number> right;
+        if (this.check_number_operands(left, right)) {
+          return <number> left - <number> right;
+        } else if (left instanceof KoiInstance) {
+          if (left.klass.methods.has("_sub")) {
+            return (left.klass.methods.get("_sub") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+        }
+        throw new KoiRuntimeError(
+          expr.op,
+          `Operands are not numbers and no _sub method found on class "${left.klass.name}"`,
+        );
       case TokenType.MOD:
-        this.check_number_operands(expr.op, left, right);
-        return <number> left % <number> right;
+        if (this.check_number_operands(left, right)) {
+          return <number> left % <number> right;
+        } else if (left instanceof KoiInstance) {
+          if (left.klass.methods.has("_mod")) {
+            return (left.klass.methods.get("_mod") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+        }
+        throw new KoiRuntimeError(
+          expr.op,
+          `Operands are not numbers and no _mod method found on class "${left.klass.name}"`,
+        );
       case TokenType.PLUS:
         if ((typeof left == "number") && (typeof right == "number")) {
           return <number> left + <number> right;
         } else if (typeof left == "string") {
           return <string> left + <string> right;
+        } else if ((typeof left == "number") && (typeof right == "string")) {
+          throw new KoiRuntimeError(
+            expr.op,
+            `Cannot add string "${right}" to number ${left}`,
+          );
         } else {
           if (left instanceof KoiInstance) {
-            return (left.klass.methods.get("_add") as KoiFunction).call(this, [
-              right,
-            ]);
+            if (left.klass.methods.has("_add")) {
+              return (left.klass.methods.get("_add") as KoiFunction).call(
+                this,
+                [
+                  right,
+                ],
+              );
+            }
           }
-          throw new KoiRuntimeError(right, "Both operands must be numbers");
+          throw new KoiRuntimeError(
+            right,
+            `Operands are not numbers and no _add method found on class "${left.klass.name}"`,
+          );
         }
       case TokenType.SLASH:
         if (<number> right == 0) {
           throw new KoiRuntimeError(right, `Cannot divide ${left} by zero`);
         }
-        this.check_number_operands(expr.op, left, right);
-        return <number> left / <number> right;
+        if (this.check_number_operands(left, right)) {
+          return <number> left / <number> right;
+        }
+        if (left instanceof KoiInstance) {
+          if (left.klass.methods.has("_div")) {
+            return (left.klass.methods.get("_div") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+        }
+        throw new KoiRuntimeError(
+          expr.op,
+          `Operands are not numbers and no _div method found on class "${left.klass.name}"`,
+        );
       case TokenType.STAR:
-        this.check_number_operands(expr.op, left, right);
-        return <number> left * <number> right;
+        if (this.check_number_operands(left, right)) {
+          return <number> left * <number> right;
+        } else if (left instanceof KoiInstance) {
+          if (left.klass.methods.has("_mul")) {
+            return (left.klass.methods.get("_mul") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+        }
+        throw new KoiRuntimeError(
+          expr.op,
+          `Operands are not numbers and no _mul method found on class "${left.klass.name}"`,
+        );
       case TokenType.GREATER:
-        this.check_number_operands(expr.op, left, right);
-        return <number> left > <number> right;
+        if (this.check_number_operands(left, right)) {
+          return <number> left > <number> right;
+        } else if (left instanceof KoiInstance) {
+          if (left.klass.methods.has("_gt")) {
+            return (left.klass.methods.get("_gt") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+        }
+        throw new KoiRuntimeError(
+          expr.op,
+          `Operands are not numbers and no _gt method found on class "${left.klass.name}"`,
+        );
       case TokenType.GREATER_EQUAL:
-        this.check_number_operands(expr.op, left, right);
-        return <number> left >= <number> right;
+        if (this.check_number_operands(left, right)) {
+          return <number> left >= <number> right;
+        } else if (left instanceof KoiInstance) {
+          if (left.klass.methods.has("_gte")) {
+            return (left.klass.methods.get("_gte") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+        }
+        throw new KoiRuntimeError(
+          expr.op,
+          `Operands are not numbers and no _gte method found on class "${left.klass.name}"`,
+        );
       case TokenType.LESS:
-        this.check_number_operands(expr.op, left, right);
-        return <number> left < <number> right;
+        if (this.check_number_operands(left, right)) {
+          return <number> left < <number> right;
+        } else if (left instanceof KoiInstance) {
+          if (left.klass.methods.has("_lt")) {
+            return (left.klass.methods.get("_lt") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+        }
+        throw new KoiRuntimeError(
+          expr.op,
+          `Operands are not numbers and no _lt method found on class "${left.klass.name}"`,
+        );
       case TokenType.LESS_EQUAL:
-        this.check_number_operands(expr.op, left, right);
-        return <number> left <= <number> right;
+        if (this.check_number_operands(left, right)) {
+          return <number> left <= <number> right;
+        } else if (left instanceof KoiInstance) {
+          if (left.klass.methods.has("_lte")) {
+            return (left.klass.methods.get("_lte") as KoiFunction).call(this, [
+              right,
+            ]);
+          }
+        }
+        throw new KoiRuntimeError(
+          expr.op,
+          `Operands are not numbers and no _lte method found on class "${left.klass.name}"`,
+        );
       case TokenType.BANG_EQUAL:
         return !this.is_equal(left, right);
       case TokenType.EQUAL_EQUAL:
