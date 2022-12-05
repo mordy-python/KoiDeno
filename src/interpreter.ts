@@ -312,16 +312,21 @@ export class Interpreter extends Visitor {
     this.locals.set(expr, depth);
   }
   private check_number_operand(operator: Token, operand: any) {
-    if (operand instanceof Number) {
+    if (typeof operand == "number") {
       return;
+    } else {
+      throw new KoiRuntimeError(
+        operator,
+        `Operand ${operand} must be a number`,
+      );
     }
-    throw new KoiRuntimeError(operator, `Operand ${operand} must be a number`);
   }
   private check_number_operands(operator: Token, left: any, right: any) {
-    if ((left instanceof Number) && (right instanceof Number)) {
+    if ((typeof left == "number") && (typeof right == "number")) {
       return;
+    } else {
+      throw new KoiRuntimeError(operator, `Both operands must be numbers`);
     }
-    throw new KoiRuntimeError(operator, `Both operands must be numbers`);
   }
   private is_truthy(object: any): boolean {
     if (!object) {
