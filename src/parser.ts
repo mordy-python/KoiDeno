@@ -20,10 +20,8 @@ import {
   Expression,
   Function,
   If,
-  Print,
   Return,
   Stmt,
-  StmtVisitor,
   Var,
   While,
 } from "./stmt.ts";
@@ -71,9 +69,9 @@ export class Parser {
   }
 
   private statement(): any {
-    if (this.match(TokenType.PRINT)) {
-      return this.print_statement();
-    }
+    // if (this.match(TokenType.PRINT)) {
+    //   return this.print_statement();
+    // }
     if (this.match(TokenType.IF)) {
       return this.if_statement();
     }
@@ -161,11 +159,11 @@ export class Parser {
     }
     return new If(condition, then_branch, else_branch);
   }
-  private print_statement() {
-    const value = this.expression();
-    this.consume(TokenType.SEMICOLON, "Expected ';' after value");
-    return new Print(value);
-  }
+  // private print_statement() {
+  //   const value = this.expression();
+  //   this.consume(TokenType.SEMICOLON, "Expected ';' after value");
+  //   return new Print(value);
+  // }
   private expression_statement(): Stmt {
     const expr = this.expression();
     this.consume(TokenType.SEMICOLON, "Expect ';' after value");
@@ -446,7 +444,6 @@ export class Parser {
         case TokenType.FOR:
         case TokenType.WHILE:
         case TokenType.IF:
-        case TokenType.PRINT:
         case TokenType.RETURN:
           return;
       }

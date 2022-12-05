@@ -18,9 +18,9 @@ export abstract class StmtVisitor {
   visit_if_stmt(stmt: If) {
     throw "Not Implemented";
   }
-  visit_print_stmt(stmt: Print) {
-    throw "Not Implemented";
-  }
+  // visit_print_stmt(stmt: Print) {
+  //   throw "Not Implemented";
+  // }
   visit_return_stmt(stmt: Return) {
     throw "Not Implemented";
   }
@@ -105,16 +105,16 @@ export class If extends Stmt {
   }
 }
 
-export class Print extends Stmt {
-  expression: Expr;
-  constructor(expression: Expr) {
-    super();
-    this.expression = expression;
-  }
-  accept(visitor: StmtVisitor) {
-    return visitor.visit_print_stmt(this);
-  }
-}
+// export class Print extends Stmt {
+//   expression: Expr;
+//   constructor(expression: Expr) {
+//     super();
+//     this.expression = expression;
+//   }
+//   accept(visitor: StmtVisitor) {
+//     return visitor.visit_print_stmt(this);
+//   }
+// }
 
 export class Return extends Stmt {
   keyword: Token;

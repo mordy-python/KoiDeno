@@ -5,7 +5,6 @@ import {
   Expression,
   Function,
   If,
-  Print,
   Return,
   Var,
   While,
@@ -77,9 +76,9 @@ export class Visitor {
   visit_if_stmt(stmt: If) {
     throw "Not Implemented";
   }
-  visit_print_stmt(stmt: Print) {
-    throw "Not Implemented";
-  }
+  // visit_print_stmt(stmt: Print) {
+  //   throw "Not Implemented";
+  // }
   visit_return_stmt(stmt: Return) {
     throw "Not Implemented";
   }
