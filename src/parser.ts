@@ -150,7 +150,7 @@ export class Parser {
     this.consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition");
 
     const then_branch = this.statement();
-    let else_branch: Stmt | undefined;
+    let else_branch: Stmt[] | undefined;
     if (this.match(TokenType.ELSE)) {
       else_branch = this.statement();
     }
