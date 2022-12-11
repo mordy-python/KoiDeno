@@ -16,10 +16,21 @@ class Koi {
     this.interpreter = new Interpreter();
   }
   run(source: string) {
-    const scanner = new Scanner(source, this.scanner_error);
+    const scanner = new Scanner(source, (line: number, message: string) => {
+      message = `[line ${line}] Error : ${message}`;
+      console.error(message);
+      this.had_error = true;
+    });
     const tokens = scanner.scan_tokens();
 
-    const parser = new Parser(tokens, this.parse_error);
+    const parser = new Parser(tokens, (token: Token, message: string) => {
+      const where = token.type == TokenType.EOF
+        ? " at end "
+        : ` at "${token.lexeme}" `;
+      message = `[line ${token.line}] Error ${where} : ${message}`;
+      console.error(message);
+      this.had_error = true;
+    });
     const statements = parser.parse();
     if (this.had_error) {
       return;
@@ -27,7 +38,9 @@ class Koi {
     const resolver = new Resolver(
       this.interpreter,
       (token: Token, message: string) => {
-        this.report(token.line, token.lexeme, message);
+        message = `[line ${token.line}] Error ${token.lexeme} : ${message}`;
+        console.error(message);
+        this.had_error = true;
       },
     );
     resolver.resolve(statements);
@@ -36,26 +49,12 @@ class Koi {
     }
     this.interpreter.interpret(statements);
   }
-  scanner_error(line: number, message: string) {
-    this.report(line, "", message);
-  }
-  parse_error(token: Token, message: string) {
-    if (token.type == TokenType.EOF) {
-      this.report(token.line, " At end ", message);
-    } else {
-      this.report(token.line, ` at "${token.lexeme}" `, message);
-    }
-  }
   runtime_error(error: KoiRuntimeError) {
     const message = `"${error.message}" in line [line ${error.token.line}]`;
     console.error(message);
     this.had_runtime_error = true;
   }
-  report(line: number, where: string, message: string) {
-    message = `[line ${line}] Error ${where} : ${message}`;
-    console.error(message);
-    this.had_error = true;
-  }
+
   async run_file(filename: string) {
     const lines = await Deno.readTextFile(filename);
     this.run(lines);
