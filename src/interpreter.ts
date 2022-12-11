@@ -68,6 +68,8 @@ export class Interpreter extends Visitor {
         console.error(Colors.red(`  Error on line ${error.token.line}
     Error at ${error.token.type == TokenType.EOF ? "end" : error.token.lexeme}
       ${error.message}`));
+      } else {
+        console.error(error);
       }
       Deno.exit(1);
     }
@@ -377,9 +379,9 @@ export class Interpreter extends Visitor {
   }
   visit_if_stmt(stmt: If) {
     if (this.is_truthy(this.evaluate(stmt.condition))) {
-      this.execute(stmt.then_branch);
+      this.exec_block(stmt.then_branch, this.env);
     } else if (stmt.else_branch) {
-      this.execute(stmt.else_branch);
+      this.exec_block(stmt.else_branch, this.env);
     }
     return null;
   }
@@ -417,7 +419,7 @@ export class Interpreter extends Visitor {
   }
   visit_while_stmt(stmt: While) {
     while (this.is_truthy(this.evaluate(stmt.condition))) {
-      this.execute(stmt.body);
+      this.exec_block(stmt.body, this.env);
     }
     return null;
   }
@@ -457,7 +459,7 @@ export class Interpreter extends Visitor {
     }
     return left == right;
   }
-  exec_block(statements: Array<Stmt>, env: Environment) {
+  exec_block(statements: Stmt[], env: Environment) {
     const previous = this.env;
     try {
       this.env = env;

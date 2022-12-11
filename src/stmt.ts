@@ -92,9 +92,9 @@ export class Function extends Stmt {
 
 export class If extends Stmt {
   condition: Expr;
-  then_branch: Stmt;
-  else_branch?: Stmt;
-  constructor(condition: Expr, then_branch: Stmt, else_branch?: Stmt) {
+  then_branch: Stmt[];
+  else_branch?: Stmt[];
+  constructor(condition: Expr, then_branch: Stmt[], else_branch?: Stmt[]) {
     super();
     this.condition = condition;
     this.then_branch = then_branch;
@@ -144,8 +144,8 @@ export class Var extends Stmt {
 
 export class While extends Stmt {
   condition: Expr;
-  body: Stmt;
-  constructor(condition: Expr, body: Stmt) {
+  body: Stmt[];
+  constructor(condition: Expr, body: Stmt[]) {
     super();
     this.condition = condition;
     this.body = body;
