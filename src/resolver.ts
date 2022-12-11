@@ -147,7 +147,7 @@ export class Resolver extends Visitor {
     this.resolve_expression(stmt.condition);
     this.resolve_statements(stmt.then_branch);
     if (stmt.else_branch) {
-      this.resolve_statement(stmt.else_branch);
+      this.resolve_statements(stmt.else_branch);
     }
   }
   visit_return_stmt(stmt: Return) {
@@ -166,7 +166,7 @@ export class Resolver extends Visitor {
   }
   visit_while_stmt(stmt: While) {
     this.resolve_expression(stmt.condition);
-    this.resolve_statement(stmt.body);
+    this.resolve_statements(stmt.body);
   }
   visit_binary_expr(expr: Binary) {
     this.resolve_expression(expr.left);
